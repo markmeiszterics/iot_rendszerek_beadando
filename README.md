@@ -4,7 +4,7 @@
 The "application" uses server-client architecture.
 The server side application is written in .cpp for Arduino, the Client side is written in .py for Raspberry Pi.
 
-The project use a LED, a Buzzer and a Light Sensor.
+The project use a LED, a Buzzer and a Light Sensor and LCD Display.
 
 The "house" is secured when the Light Sensor is not triggered.
 If light Sensor is triggered, you have to enter a 4-digit PIN code on the Python terminal, unless you really like the music of the buzzer.

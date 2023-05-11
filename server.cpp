@@ -1,9 +1,11 @@
-#include <LiquidCrystal_I2C.h>
+#include "Arduino_SensorKit.h"
+#include "Wire.h"
 
 //bekotes
-const int ledPin = 1;
-const int buzzerPin = 2;
 const int lightSensorPin = 3;
+const int buttonPin = 4;
+const int ledPin = 6;
+const int buzzerPin = 5;
 
 //fenyerzekenyseg
 const int lightThreshold = 500;
@@ -14,19 +16,19 @@ int code = 0;
 bool houseAttacked = false;
 bool alarmEnabled = true;
 
-//lcd init
-LiquidCrystal_I2C lcd(0x32, 16, 2);
-
 void setup() {
-  
-  // lcd init
-  lcd.begin(16, 2);
-  lcd.print("init..");
-  lcd.setCursor(0, 1);
-  lcd.print("Alert sys");
+
   pinMode(ledPin, OUTPUT);
   pinMode(buzzerPin, OUTPUT);
   pinMode(lightSensorPin, INPUT);
+
+  Oled.begin();
+  Oled.setFlipMode(true);
+
+  Oled.clear();
+  Oled.setFont(u8x8_font_chroma48medium8_r);
+  Oled.setCursor(0,0);
+  Oled.print("Welcome home!");
 
   Serial.begin(9600);
 }
@@ -37,10 +39,11 @@ void loop() {
   if (lightLevel < lightThreshold) {
     if (alarmEnabled && !houseAttacked) {
       houseAttacked = true;
-      lcd.clear();
-      lcd.print("Intruder");
-      lcd.setCursor(0, 1);
-      lcd.print("alert!");
+      Oled.clear();
+      Oled.setCursor(0, 1);
+      Oled.print("Alert System");
+      Oled.setCursor(0, 2);
+      Oled.print("Intruder!");
 
       Serial.println("attack");
       digitalWrite(ledPin, HIGH);
@@ -50,10 +53,10 @@ void loop() {
   else {
     if (houseAttacked) {
       houseAttacked = false;
-      lcd.clear();
-      lcd.print("Alert System");
-      lcd.setCursor(0, 1);
-      lcd.print("Init..");
+      Oled.clear();
+      Oled.print("Alert System");
+      Oled.setCursor(0, 1);
+      Oled.print("Safe!");
 
       Serial.println("secured");
       digitalWrite(ledPin, LOW);
@@ -66,10 +69,10 @@ void loop() {
 
     if (code == pinCode) {
       alarmEnabled = false;
-      Serial.println("Kiriasztva..");
+      Serial.println("Successfully Unarmed..");
     }
     else {
-      Serial.println("Helytelen PIN!");
+      Serial.println("Incorrect PIN!");
     }
   }
 }
